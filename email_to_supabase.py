@@ -78,7 +78,18 @@ def get_access_token() -> str | None:
         token_cache=cache
     )
 
-    # Try silent auth first (uses cached refresh token)
+    # If in GitHub Actions, use raw refresh token string to completely avoid JSON bugs!
+    refresh_token = os.environ.get("AZURE_REFRESH_TOKEN")
+    if refresh_token:
+        result = app.acquire_token_by_refresh_token(refresh_token, scopes=SCOPES)
+        if result and "access_token" in result:
+            logger.info("⚡ Authenticated instantly via Refresh Token!")
+            return result["access_token"]
+        else:
+            logger.error(f"❌ Refresh token rejected: {result}")
+            exit(1)
+
+    # Local fallback logic (uses cache)
     accounts = app.get_accounts()
     if accounts:
         result = app.acquire_token_silent(SCOPES, account=accounts[0])
