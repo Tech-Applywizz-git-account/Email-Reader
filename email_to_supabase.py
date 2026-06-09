@@ -4,6 +4,7 @@ import time
 import json
 import logging
 import requests
+import html
 from dotenv import load_dotenv
 from supabase import create_client, Client
 import msal
@@ -175,9 +176,10 @@ def extract_name_from_subject(subject: str) -> str | None:
     return match.group(1).strip() if match else None
 
 
-def html_to_text(html: str) -> str:
-    """Strip HTML tags to get plain text."""
-    text = re.sub(r'<[^>]+>', ' ', html)
+def html_to_text(html_content: str) -> str:
+    """Strip HTML tags and decode entities to get plain text."""
+    text = re.sub(r'<[^>]+>', ' ', html_content)
+    text = html.unescape(text)
     return re.sub(r'\s+', ' ', text).strip()
 
 
@@ -278,6 +280,7 @@ def check_inbox():
                 mark_email_as_read(access_token, msg_id)
         else:
             logger.warning(f"⚠️  Could not extract email from body. Skipping.")
+            logger.warning(f"BODY DUMP: {repr(body_text)}")
 
 
 if __name__ == "__main__":
