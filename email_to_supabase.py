@@ -87,6 +87,10 @@ def get_access_token() -> str | None:
             logger.info("🔑 Token refreshed silently.")
             return result["access_token"]
 
+    if os.environ.get("GITHUB_ACTIONS"):
+        logger.error("❌ Invalid Token Cache in GitHub Actions! Please use the BASE64 string.")
+        exit(1)
+
     # First time — Device Code Flow (user opens browser once)
     logger.info("🌐 First-time login required. Starting Device Code Flow...")
     flow = app.initiate_device_flow(scopes=SCOPES)
