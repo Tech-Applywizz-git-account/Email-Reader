@@ -1,0 +1,4 @@
+supabase
+msal
+python-dotenv
+requests
