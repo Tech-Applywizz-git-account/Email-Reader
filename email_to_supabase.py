@@ -20,6 +20,7 @@ CLIENT_ID         = os.getenv("AZURE_CLIENT_ID", "").strip()
 CLIENT_SECRET     = os.getenv("AZURE_CLIENT_SECRET", "").strip()
 TENANT_ID         = os.getenv("AZURE_TENANT_ID", "").strip()
 EMAIL_USER        = os.getenv("EMAIL_USER", "").strip()
+DEFAULT_PASSWORD  = os.getenv("DEFAULT_PASSWORD", "Applywizz@2026").strip()
 CHECK_INTERVAL    = int(os.getenv("CHECK_INTERVAL", "300").strip())
 
 TOKEN_CACHE_FILE  = "token_cache.json"
@@ -220,6 +221,7 @@ def add_user_to_supabase(member_email: str, full_name: str | None = None) -> boo
         logger.info(f"🔐 Creating auth user: {member_email}")
         auth_res = supabase.auth.admin.create_user({
             "email": member_email,
+            "password": DEFAULT_PASSWORD,
             "email_confirm": True,
             "user_metadata": {
                 "full_name": full_name or "",
