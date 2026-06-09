@@ -2,8 +2,8 @@ name: Email to Supabase Monitor
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Run every 5 minutes
-  workflow_dispatch: # Allow manual trigger from the GitHub UI
+    - cron: '*/5 * * * *' 
+  workflow_dispatch: 
 
 jobs:
   run-monitor:
@@ -32,7 +32,5 @@ jobs:
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         EMAIL_USER: ${{ secrets.EMAIL_USER }}
-        TOKEN_CACHE_JSON: ${{ secrets.TOKEN_CACHE_JSON }}
-      run: |
-        python -c "import os; open('token_cache.json', 'w', encoding='utf-8').write(os.environ['TOKEN_CACHE_JSON'])"
-        python email_to_supabase.py
+        AZURE_REFRESH_TOKEN: ${{ secrets.AZURE_REFRESH_TOKEN }}
+      run: python email_to_supabase.py
