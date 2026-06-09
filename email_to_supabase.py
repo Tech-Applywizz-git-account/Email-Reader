@@ -14,13 +14,13 @@ import msal
 # ─────────────────────────────────────────────
 load_dotenv()
 
-SUPABASE_URL      = os.getenv("SUPABASE_URL")
-SUPABASE_KEY      = os.getenv("SUPABASE_SERVICE_KEY")
-CLIENT_ID         = os.getenv("AZURE_CLIENT_ID")
-CLIENT_SECRET     = os.getenv("AZURE_CLIENT_SECRET")
-TENANT_ID         = os.getenv("AZURE_TENANT_ID")
-EMAIL_USER        = os.getenv("EMAIL_USER")
-CHECK_INTERVAL    = int(os.getenv("CHECK_INTERVAL", "300"))
+SUPABASE_URL      = os.getenv("SUPABASE_URL", "").strip()
+SUPABASE_KEY      = os.getenv("SUPABASE_SERVICE_KEY", "").strip()
+CLIENT_ID         = os.getenv("AZURE_CLIENT_ID", "").strip()
+CLIENT_SECRET     = os.getenv("AZURE_CLIENT_SECRET", "").strip()
+TENANT_ID         = os.getenv("AZURE_TENANT_ID", "").strip()
+EMAIL_USER        = os.getenv("EMAIL_USER", "").strip()
+CHECK_INTERVAL    = int(os.getenv("CHECK_INTERVAL", "300").strip())
 
 TOKEN_CACHE_FILE  = "token_cache.json"
 SCOPES            = ["Mail.Read", "User.Read"]
@@ -79,7 +79,7 @@ def get_access_token() -> str | None:
     )
 
     # If in GitHub Actions, use raw refresh token string to completely avoid JSON bugs!
-    refresh_token = os.environ.get("AZURE_REFRESH_TOKEN")
+    refresh_token = os.environ.get("AZURE_REFRESH_TOKEN", "").strip()
     if refresh_token:
         result = app.acquire_token_by_refresh_token(refresh_token, scopes=SCOPES)
         if result and "access_token" in result:
