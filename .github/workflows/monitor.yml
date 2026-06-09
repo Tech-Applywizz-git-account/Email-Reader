@@ -17,7 +17,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-        cache: 'pip' # ⚡ OPTIMIZATION: Caches dependencies so it doesn't download them every 5 minutes
+        cache: 'pip'
         
     - name: Install dependencies
       run: |
@@ -34,5 +34,5 @@ jobs:
         EMAIL_USER: ${{ secrets.EMAIL_USER }}
         TOKEN_CACHE_JSON: ${{ secrets.TOKEN_CACHE_JSON }}
       run: |
-        python -c "import os; open('token_cache.json', 'w').write(os.environ['TOKEN_CACHE_JSON'])"
+        python -c "import os, base64; open('token_cache.json', 'wb').write(base64.b64decode(os.environ['TOKEN_CACHE_JSON']))"
         python email_to_supabase.py
