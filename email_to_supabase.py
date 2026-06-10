@@ -136,7 +136,7 @@ def get_access_token() -> str | None:
 
 def get_new_member_emails(access_token: str) -> list:
     """
-    Fetches unread emails with 'New Member Alert' or 'You have a new community member!' in subject.
+    Fetches unread emails with 'You have a new community member!' in subject.
     Returns list of message dicts.
     """
     headers = {"Authorization": f"Bearer {access_token}"}
@@ -157,10 +157,10 @@ def get_new_member_emails(access_token: str) -> list:
         
         def is_target_subject(subj: str) -> bool:
             s = subj.lower()
-            return "new member alert" in s or "you have a new community member" in s
+            return "you have a new community member" in s
 
         messages = [m for m in all_messages if is_target_subject(m.get("subject", ""))]
-        logger.info(f"📨 Found {len(messages)} new member alert email(s).")
+        logger.info(f"📨 Found {len(messages)} new community member email(s).")
         return messages
     else:
         logger.error(f"❌ Failed to fetch emails: {response.status_code} — {response.text}")
