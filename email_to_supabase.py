@@ -136,7 +136,7 @@ def get_access_token() -> str | None:
 
 def get_new_member_emails(access_token: str) -> list:
     """
-    Fetches unread emails with 'New Member Alert' in subject.
+    Fetches unread emails with 'New Member Alert' or 'You have a new community member!' in subject.
     Returns list of message dicts.
     """
     headers = {"Authorization": f"Bearer {access_token}"}
@@ -154,7 +154,12 @@ def get_new_member_emails(access_token: str) -> list:
 
     if response.status_code == 200:
         all_messages = response.json().get("value", [])
-        messages = [m for m in all_messages if "New Member Alert" in m.get("subject", "")]
+        
+        def is_target_subject(subj: str) -> bool:
+            s = subj.lower()
+            return "new member alert" in s or "you have a new community member" in s
+
+        messages = [m for m in all_messages if is_target_subject(m.get("subject", ""))]
         logger.info(f"📨 Found {len(messages)} new member alert email(s).")
         return messages
     else:
@@ -288,6 +293,10 @@ def check_inbox():
 
         full_name    = extract_name_from_subject(subject)
         member_email = extract_member_email(body_text)
+
+        if not full_name and member_email:
+            # Fallback to the email prefix if name is not found
+            full_name = member_email.split('@')[0]
 
         if member_email:
             logger.info(f"👤 Member: {full_name} | {member_email}")
