@@ -141,9 +141,9 @@ def get_new_member_emails(access_token: str) -> list:
     """
     headers = {"Authorization": f"Bearer {access_token}"}
 
-    # Filter: unread only (we'll filter the subject in Python to avoid Graph API complexity errors)
+    # Filter: fetch top 50 recent emails, regardless of read status.
+    # (Duplicate prevention is handled by checking Supabase for existing users)
     params = {
-        "$filter": "isRead eq false",
         "$select": "id,subject,body,receivedDateTime",
         "$top": "50",
         "$orderby": "receivedDateTime desc"
