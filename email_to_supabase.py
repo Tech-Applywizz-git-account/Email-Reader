@@ -179,7 +179,7 @@ def mark_email_as_read(access_token: str, message_id: str):
 
 def extract_member_email(text: str) -> str | None:
     """Extract email from 'Email: xxx@xxx.com' pattern in body."""
-    pattern = r'Email[:\s]+([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})'
+    pattern = r'Email.*?([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})'
     match = re.search(pattern, text, re.IGNORECASE)
     return match.group(1).strip() if match else None
 
